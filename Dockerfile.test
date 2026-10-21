@@ -1,0 +1,22 @@
+# Simple test Dockerfile
+FROM python:3.11-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy verification script
+COPY verify_python.py .
+
+# Install PyTorch CPU build from the PyTorch CPU index.
+# NOTE: --index-url applies to the WHOLE command, so torch must be
+# installed on its own. Batching numpy/pandas/scikit-learn here would make
+# pip look for them on download.pytorch.org, which does not host them.
+RUN pip install --no-cache-dir \
+    torch --index-url https://download.pytorch.org/whl/cpu
+
+# General packages from the default PyPI index
+RUN pip install --no-cache-dir \
+    numpy pandas scikit-learn
+
+# Run verification
+CMD ["python", "verify_python.py"]
